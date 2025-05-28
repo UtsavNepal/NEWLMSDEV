@@ -1,0 +1,30 @@
+# Use an official Python runtime as a parent image
+FROM python:3.11-slim
+
+# Set working directory in the container
+WORKDIR /LMS/mylibrary
+
+# Install system dependencies for psycopg2
+RUN apt-get update && apt-get install -y \
+    libpq-dev \
+    gcc \
+    python3-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy the requirements file into the container
+COPY LMS/requirements.txt .
+
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the entire Django project into the container (optional if using volumes for development)
+COPY LMS/mylibrary .
+
+# Expose port 8000 for the Django app
+EXPOSE 8000
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+
+# Run the Django development server
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
