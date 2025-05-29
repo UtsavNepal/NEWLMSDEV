@@ -13,8 +13,8 @@ RUN apt-get update && apt-get install -y curl apt-transport-https gnupg && \
     apt-get update && ACCEPT_EULA=Y apt-get install -y mssql-tools18 && \
     apt-get clean
 
-# Copy SQL scripts to the container
-COPY LibraryManagementSystem/Scripts/ /docker-entrypoint-initdb.d/
+# Copy SQL scripts to the container (disabled: directory does not exist in repo)
+# COPY LibraryManagementSystem/Scripts/ /docker-entrypoint-initdb.d/
 
 # Create entrypoint script to initialize database and run SQL Server
 RUN echo '#!/bin/bash\n\
