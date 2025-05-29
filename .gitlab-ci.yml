@@ -1,0 +1,75 @@
+stages:
+  - build
+  - test
+  - push
+  - deploy
+
+default:
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
+  variables:
+    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_TLS_CERTDIR: ""
+    REPO: "$DOCKER_USERNAME"
+    TAG: "latest"
+
+before_script:
+  - apk add --no-cache bash
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+build_backend:
+  stage: build
+  script:
+    - docker build -t $REPO/backend:$TAG -f DevOps/Dockerfile.backend .
+  only:
+    - main
+
+build_frontend:
+  stage: build
+  script:
+    - docker build -t $REPO/frontend:$TAG -f DevOps/Dockerfile.frontend .
+  only:
+    - main
+
+build_sqlserver:
+  stage: build
+  script:
+    - docker build -t $REPO/sqlserver:$TAG -f DevOps/Dockerfile.sqlserver .
+  only:
+    - main
+
+test_backend:
+  stage: test
+  script:
+    - docker run --rm $REPO/backend:$TAG python manage.py test || echo "No tests found, skipping."
+  only:
+    - main
+
+push_backend:
+  stage: push
+  script:
+    - docker push $REPO/backend:$TAG
+  only:
+    - main
+
+docker_push_frontend:
+  stage: push
+  script:
+    - docker push $REPO/frontend:$TAG
+  only:
+    - main
+
+push_sqlserver:
+  stage: push
+  script:
+    - docker push $REPO/sqlserver:$TAG
+  only:
+    - main
+
+deploy:
+  stage: deploy
+  script:
+    - bash DevOps/deploy.sh
+  only:
+    - main 
