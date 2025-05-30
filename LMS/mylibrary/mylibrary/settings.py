@@ -22,19 +22,19 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-#ipqde3_+@)1-r0kmbfb+b)n6r&n(9zpgnsv^7sit+40+q1(k1'
+SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-#ipqde3_+@)1-r0kmbfb+b)n6r&n(9zpgnsv^7sit+40+q1(k1')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
-ALLOWED_HOSTS = ['utsav.kutumbatech.com.np','110.34.2.30']
+ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'utsav.kutumbatech.com.np,110.34.2.30').split(',')
 
 EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
-EMAIL_HOST = "smtp.gmail.com"
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = "aayushbajracharya90@gmail.com"
-EMAIL_HOST_PASSWORD = "fxac asfd yqht wfmf"  # Replace this with your Gmail App Password
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'smtp.gmail.com')
+EMAIL_PORT = int(os.getenv('EMAIL_PORT', 587))
+EMAIL_USE_TLS = os.getenv('EMAIL_USE_TLS', 'True') == 'True'
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'aayushbajracharya90@gmail.com')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'fxac asfd yqht wfmf')
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
@@ -93,8 +93,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 # CORS_ALLOWED_ORIGINS = ["http://localhost:5173",]
-CORS_ALLOWED_ORIGINS = [
-    'http://utsav.kutumbatech.com.np:5005','http://110.34.2.30:5005']
+CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://utsav.kutumbatech.com.np:5005,http://110.34.2.30:5005').split(',')
 ROOT_URLCONF = 'mylibrary.urls'
 
 TEMPLATES = [

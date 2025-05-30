@@ -6,13 +6,10 @@ REPO="utsavnepal"
 TAG="latest"
 SERVICES=("frontend" "backend" "nginx")
 
-
-
-
 for SERVICE in "${SERVICES[@]}"; do
   IMG="$REPO/$SERVICE:$TAG"
   echo "Processing $SERVICE..."
-  # Remove existing image if it exists
+
   if docker image inspect "$IMG" > /dev/null 2>&1; then
     echo "Removing existing image $IMG..."
     docker rmi -f "$IMG"

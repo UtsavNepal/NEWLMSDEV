@@ -62,7 +62,7 @@ deploy_manual_job:
   before_script:
     - apk update && apk add --no-cache openssh-client sshpass git docker-cli docker-compose
   script:
-    - echo "🚀 Starting deployment on live server 110.34.2.30"
+    - echo "Starting deployment on live server 110.34.2.30"
     - mkdir -p ~/.ssh
     - echo -e "Host live-server\n  HostName 110.34.2.30\n  Port 23\n  User devops" > ~/.ssh/config
     - chmod 600 ~/.ssh/config

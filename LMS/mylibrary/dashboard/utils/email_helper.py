@@ -8,5 +8,5 @@ class EmailHelper:
             message,
             "aayushbajracharya90@gmail.com",  # From email (update this)
             [recipient_email],
-            fail_silently=False,  # If set to True, Django won't raise an error if email sending fails
+            fail_silently=False, 
         )
