@@ -71,7 +71,7 @@ deploy_manual_job:
         set -e
         echo '🔧 Creating deployment directory...'
         mkdir -p /home/hsmdevops/Utsav/GITLAB
-        cd /home/hsmdevops/Utsav/GITLAB/DevOps/
+        cd /home/hsmdevops/Utsav/GITLAB
 
         echo 'Cloning or pulling latest code...'
         if [ -d .git ]; then
@@ -81,13 +81,13 @@ deploy_manual_job:
         fi
 
         echo 'Building & starting Docker containers...'
-        docker-compose -f docker-compose.yml up -d --build
+        DevOps/docker-compose -f DevOps/docker-compose.yml up -d --build
 
         echo 'Checking container status...'
         docker ps -a
 
         echo 'Displaying recent logs...'
-        docker-compose logs --tail=50
+        DevOps/docker-compose logs --tail=50
 
         echo 'Deployment completed and cleanup done on live server.'
       "
