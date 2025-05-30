@@ -69,7 +69,7 @@ deploy_manual_job:
     - echo -e "Host live-server\n  HostName 110.34.2.30\n  Port 23\n  User devops" > ~/.ssh/config
     - chmod 600 ~/.ssh/config
 
-
+    # SSH into the server and run deployment steps
     - |
       sshpass -p "$DEPLOY_SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no devops@110.34.2.30 -p 23 "
         set -e
