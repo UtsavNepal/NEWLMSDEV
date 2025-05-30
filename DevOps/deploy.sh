@@ -2,13 +2,11 @@
 set -e
 
 # Variables
-REPO="aayush90"
+REPO="utsavnepal"
 TAG="latest"
-SERVICES=("frontend" "backend" "sqlserver")
+SERVICES=("frontend" "backend")
 
-# Authenticate with Docker Hub
-echo "Logging into Docker Hub..."
-docker login -u "$REPO"
+
 
 # Build, Tag, and Push
 for SERVICE in "${SERVICES[@]}"; do
