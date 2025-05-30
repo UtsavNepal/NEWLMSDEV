@@ -19,7 +19,7 @@ for SERVICE in "${SERVICES[@]}"; do
   fi
   # Build
   echo "Building $SERVICE image..."
-  docker build -t "$IMG" -f "Dockerfile.$SERVICE" .. || { echo "Failed to build $SERVICE"; exit 1; }
+  docker build -t "$IMG" -f "DevOps/Dockerfile.$SERVICE" . || { echo "Failed to build $SERVICE"; exit 1; }
   # Push
   echo "Pushing $SERVICE image to Docker Hub..."
   docker push "$IMG" || { echo "Failed to push $SERVICE"; exit 1; }
