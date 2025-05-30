@@ -26,9 +26,12 @@ for SERVICE in "${SERVICES[@]}"; do
 done
 
 
+echo "Stopping and removing existing containers..."
+docker compose -f DevOps/docker-compose.yml down || true
+
 echo "Pulling images and deploying containers..."
 docker compose -f DevOps/docker-compose.yml pull || { echo "Failed to pull images"; exit 1; }
-docker compose -f DevOps/docker-compose.yml up
+docker compose -f DevOps/docker-compose.yml up -d || { echo "Failed to deploy containers"; exit 1; }
 
 
 echo "Pruning unused resources..."
