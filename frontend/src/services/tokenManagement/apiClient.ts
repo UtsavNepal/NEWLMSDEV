@@ -2,7 +2,7 @@ import axios, { AxiosError, AxiosRequestConfig } from 'axios';
 import { TokenService } from './TokenService';
 import { isTokenExpired } from '../Utils/tokenUtils';
 
-const API_BASE_URL = 'http://localhost/api';
+const API_BASE_URL = 'http://utsav.kutumbatech.com.np:5004/api/';
 
 const apiClient = axios.create({
   baseURL: API_BASE_URL,
