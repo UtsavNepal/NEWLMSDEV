@@ -1,97 +1,97 @@
-# stages:
-#   - test
-#   - push
-#   - deploy
+stages:
+  - test
+  - push
+  - deploy
 
-# variables:
-#   DOCKER_HOST: tcp://docker:2375/
-#   DOCKER_TLS_CERTDIR: ""
-#   REPO: "$DOCKER_USERNAME"
-#   TAG: "latest"
+variables:
+  DOCKER_HOST: tcp://docker:2375/
+  DOCKER_TLS_CERTDIR: ""
+  REPO: "$DOCKER_USERNAME"
+  TAG: "latest"
 
-# default:
-#   image: docker:24.0.5
-#   services:
-#     - docker:24.0.5-dind
+default:
+  image: docker:24.0.5
+  services:
+    - docker:24.0.5-dind
 
-# before_script:
-#   - apk add --no-cache bash
-#   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+before_script:
+  - apk add --no-cache bash
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-# build_and_push_backend:
-#   stage: push
-#   script:
-#     - docker build -t $REPO/backend:$TAG -f DevOps/Dockerfile.backend .
-#     - docker push $REPO/backend:$TAG
-#   only:
-#     - main
-
-# build_and_push_frontend:
-#   stage: push
-#   script:
-#     - docker build -t $REPO/frontend:$TAG -f DevOps/Dockerfile.frontend .
-#     - docker push $REPO/frontend:$TAG
-#   only:
-#     - main
-
-# build_and_push_nginx:
-#   stage: push
-#   script:
-#     - docker build -t $REPO/nginx:$TAG -f DevOps/Dockerfile.nginx .
-#     - docker push $REPO/nginx:$TAG
-#   only:
-#     - main
-
-# test_backend:
-#   stage: test
-#   script:
-#     - docker run --rm $REPO/backend:$TAG python manage.py test || echo "No tests found, skipping."
-#   only:
-#     - main
-
-# deploy:
-#   stage: deploy
-#   script:
-#     - bash DevOps/deploy.sh
-#   only:
-#     - main
-
-deploy_manual_job:
-  stage: deploy
-  image: alpine:latest
-  before_script:
-    - apk update && apk add --no-cache openssh-client sshpass git
+build_and_push_backend:
+  stage: push
   script:
-    - echo "🚀 Starting deployment on live server 110.34.2.30"
-
-    # SSH config setup
-    - mkdir -p ~/.ssh
-    - echo -e "Host live-server\n  HostName 110.34.2.30\n  Port 23\n  User devops" > ~/.ssh/config
-    - chmod 600 ~/.ssh/config
-
-    # SSH into the server and run deployment steps
-    - |
-      sshpass -p "$DEPLOY_SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no devops@110.34.2.30 -p 23 "
-        set -e
-        echo '🔧 Creating deployment directory...'
-        mkdir -p /home/hsmdevops/lms-deploy
-        cd /home/hsmdevops/lms-deploy
-
-        echo ' Cloning repository using GitLab access token...'
-        git clone -b main https://oauth2:${GITLAB_ACCESS_TOKEN}@gitlab.com/utsavnepal021/NEWLMSDEV.git . || true
-
-        echo '🐳 Running deploy.sh...'
-        chmod +x DevOps/deploy.sh
-        ./DevOps/deploy.sh
-
-        echo ' Checking container status...'
-        docker ps -a
-
-        echo ' Displaying recent logs...'
-        docker compose -f DevOps/docker-compose.yml logs --tail=50
-
-        echo ' Deployment completed and cleanup done on live server.'
-      "
+    - docker build -t $REPO/backend:$TAG -f DevOps/Dockerfile.backend .
+    - docker push $REPO/backend:$TAG
   only:
     - main
-  when: manual 
+
+build_and_push_frontend:
+  stage: push
+  script:
+    - docker build -t $REPO/frontend:$TAG -f DevOps/Dockerfile.frontend .
+    - docker push $REPO/frontend:$TAG
+  only:
+    - main
+
+build_and_push_nginx:
+  stage: push
+  script:
+    - docker build -t $REPO/nginx:$TAG -f DevOps/Dockerfile.nginx .
+    - docker push $REPO/nginx:$TAG
+  only:
+    - main
+
+test_backend:
+  stage: test
+  script:
+    - docker run --rm $REPO/backend:$TAG python manage.py test || echo "No tests found, skipping."
+  only:
+    - main
+
+deploy:
+  stage: deploy
+  script:
+    - bash DevOps/deploy.sh
+  only:
+    - main
+
+# deploy_manual_job:
+#   stage: deploy
+#   image: alpine:latest
+#   before_script:
+#     - apk update && apk add --no-cache openssh-client sshpass git
+#   script:
+#     - echo "🚀 Starting deployment on live server 110.34.2.30"
+
+#     # SSH config setup
+#     - mkdir -p ~/.ssh
+#     - echo -e "Host live-server\n  HostName 110.34.2.30\n  Port 23\n  User devops" > ~/.ssh/config
+#     - chmod 600 ~/.ssh/config
+
+#     # SSH into the server and run deployment steps
+#     - |
+#       sshpass -p "$DEPLOY_SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no devops@110.34.2.30 -p 23 "
+#         set -e
+#         echo '🔧 Creating deployment directory...'
+#         mkdir -p /home/hsmdevops/lms-deploy
+#         cd /home/hsmdevops/lms-deploy
+
+#         echo ' Cloning repository using GitLab access token...'
+#         git clone -b main https://oauth2:${GITLAB_ACCESS_TOKEN}@gitlab.com/utsavnepal021/NEWLMSDEV.git . || true
+
+#         echo '🐳 Running deploy.sh...'
+#         chmod +x DevOps/deploy.sh
+#         ./DevOps/deploy.sh
+
+#         echo ' Checking container status...'
+#         docker ps -a
+
+#         echo ' Displaying recent logs...'
+#         docker compose -f DevOps/docker-compose.yml logs --tail=50
+
+#         echo ' Deployment completed and cleanup done on live server.'
+#       "
+#   only:
+#     - main
+#   when: manual 
