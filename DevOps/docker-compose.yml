@@ -2,6 +2,7 @@ version: '3.8'
 
 services:
   db:
+    container_name: utsav_db
     image: postgres:15
     environment:
       - POSTGRES_DB=lmss
@@ -19,11 +20,12 @@ services:
         ipv4_address: 172.40.0.2
 
   backend:
+    container_name: utsav_backend
     build:
       context: ..
       dockerfile: DevOps/Dockerfile.backend
     ports:
-      - "8000:8000"
+      - "5004:8000"
     volumes:
       - ../LMS:/LMS
     environment:
@@ -32,7 +34,7 @@ services:
       - DB_PASSWORD=abc123
       - DB_HOST=db
       - DB_PORT=5432
-      - DJANGO_SETTINGS_MODULE=mylibrary.settings  
+      - DJANGO_SETTINGS_MODULE=mylibrary.settings
     depends_on:
       db:
         condition: service_healthy
@@ -43,11 +45,12 @@ services:
       sh -c "export PYTHONPATH=/LMS:$PYTHONPATH && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
 
   frontend:
+    container_name: utsav_frontend
     build:
       context: ..
       dockerfile: DevOps/Dockerfile.frontend
     ports:
-      - "3000:80"
+      - "5005:80"
     depends_on:
       backend:
         condition: service_started
@@ -56,9 +59,10 @@ services:
         ipv4_address: 172.40.0.4
 
   nginx:
+    container_name: nginx_Utsav
     image: nginx:latest
     ports:
-      - "80:80"
+      - "5006:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
