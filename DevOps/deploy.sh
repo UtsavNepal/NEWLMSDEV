@@ -4,7 +4,7 @@ set -e
 # Variables
 REPO="utsavnepal"
 TAG="latest"
-SERVICES=("frontend" "backend")
+SERVICES=("frontend" "backend" "nginx")
 
 
 
@@ -28,7 +28,7 @@ done
 
 echo "Pulling images and deploying containers..."
 docker compose -f DevOps/docker-compose.yml pull || { echo "Failed to pull images"; exit 1; }
-docker compose -f DevOps/docker-compose.yml up -d || { echo "Failed to deploy containers"; exit 1; }
+docker compose -f DevOps/docker-compose.yml up
 
 
 echo "Pruning unused resources..."

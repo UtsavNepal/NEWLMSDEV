@@ -34,6 +34,14 @@ build_and_push_frontend:
   only:
     - main
 
+build_and_push_nginx:
+  stage: push
+  script:
+    - docker build -t $REPO/nginx:$TAG -f DevOps/Dockerfile.nginx .
+    - docker push $REPO/nginx:$TAG
+  only:
+    - main
+
 test_backend:
   stage: test
   script:
