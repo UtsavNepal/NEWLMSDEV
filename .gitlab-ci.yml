@@ -54,9 +54,10 @@ push_backend:
   only:
     - main
 
-docker_push_frontend:
+build_and_push_frontend:
   stage: push
   script:
+    - docker build -t $REPO/frontend:$TAG -f DevOps/Dockerfile.frontend .
     - docker push $REPO/frontend:$TAG
   only:
     - main
