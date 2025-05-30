@@ -87,7 +87,7 @@ deploy_manual_job:
         docker ps -a
 
         echo 'Displaying recent logs...'
-        docker compose logs --tail=50
+        docker compose logs --tail=50 || true
 
         echo 'Deployment completed and cleanup done on live server.'
       "
