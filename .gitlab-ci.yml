@@ -60,37 +60,36 @@ deploy_manual_job:
   stage: deploy
   image: alpine:latest
   before_script:
-    - apk update && apk add --no-cache openssh-client sshpass git
+    - apk update && apk add --no-cache openssh-client sshpass git docker-cli docker-compose
   script:
     - echo "🚀 Starting deployment on live server 110.34.2.30"
-
-    # SSH config setup
     - mkdir -p ~/.ssh
     - echo -e "Host live-server\n  HostName 110.34.2.30\n  Port 23\n  User devops" > ~/.ssh/config
     - chmod 600 ~/.ssh/config
-
-    # SSH into the server and run deployment steps
     - |
       sshpass -p "$DEPLOY_SERVER_PASSWORD" ssh -o StrictHostKeyChecking=no devops@110.34.2.30 -p 23 "
         set -e
         echo '🔧 Creating deployment directory...'
-        mkdir -p /home/hsmdevops/lms-deploy
-        cd /home/hsmdevops/lms-deploy
+        mkdir -p /home/hsmdevops/Utsav/GITLAB
+        cd /home/hsmdevops/Utsav/GITLAB
 
-        echo ' Cloning repository using GitLab access token...'
-        git clone -b main https://oauth2:${GITLAB_ACCESS_TOKEN}@gitlab.com/utsavnepal021/NEWLMSDEV.git . || true
+        echo 'Cloning or pulling latest code...'
+        if [ -d .git ]; then
+          git pull
+        else
+          git clone -b main https://oauth2:${GITLAB_ACCESS_TOKEN}@gitlab.com/utsavnepal021/NEWLMSDEV.git .
+        fi
 
-        echo '🐳 Running deploy.sh...'
-        chmod +x DevOps/deploy.sh
-        ./DevOps/deploy.sh
+        echo 'Building & starting Docker containers...'
+        docker-compose -f docker-compose.yml up -d --build
 
-        echo ' Checking container status...'
+        echo 'Checking container status...'
         docker ps -a
 
-        echo ' Displaying recent logs...'
-        docker compose -f DevOps/docker-compose.yml logs --tail=50
+        echo 'Displaying recent logs...'
+        docker-compose logs --tail=50
 
-        echo ' Deployment completed and cleanup done on live server.'
+        echo 'Deployment completed and cleanup done on live server.'
       "
   only:
     - main
