@@ -1,5 +1,4 @@
 stages:
-  - build
   - test
   - push
   - deploy
@@ -19,37 +18,10 @@ before_script:
   - apk add --no-cache bash
   - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-build_backend:
-  stage: build
-  script:
-    - docker build -t $REPO/backend:$TAG -f DevOps/Dockerfile.backend .
-  only:
-    - main
-
-build_frontend:
-  stage: build
-  script:
-    - docker build -t $REPO/frontend:$TAG -f DevOps/Dockerfile.frontend .
-  only:
-    - main
-
-build_sqlserver:
-  stage: build
-  script:
-    - docker build -t $REPO/sqlserver:$TAG -f DevOps/Dockerfile.sqlserver .
-  only:
-    - main
-
-test_backend:
-  stage: test
-  script:
-    - docker run --rm $REPO/backend:$TAG python manage.py test || echo "No tests found, skipping."
-  only:
-    - main
-
-push_backend:
+build_and_push_backend:
   stage: push
   script:
+    - docker build -t $REPO/backend:$TAG -f DevOps/Dockerfile.backend .
     - docker push $REPO/backend:$TAG
   only:
     - main
@@ -62,10 +34,10 @@ build_and_push_frontend:
   only:
     - main
 
-push_sqlserver:
-  stage: push
+test_backend:
+  stage: test
   script:
-    - docker push $REPO/sqlserver:$TAG
+    - docker run --rm $REPO/backend:$TAG python manage.py test || echo "No tests found, skipping."
   only:
     - main
 
