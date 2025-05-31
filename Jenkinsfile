@@ -1,27 +1,13 @@
 pipeline {
     agent any
     stages {
-        stage('Install Dependencies') {
+        stage('Build and Deploy with Docker Compose') {
             steps {
-                bat 'npm install'
-            }
-        }
-        stage('Run Tests') {
-            steps {
-                bat 'npm test'
-            }
-        }
-        stage('Build') {
-            steps {
-                bat 'npm run build'
-            }
-        }
-        stage('Deploy') {
-            steps {
-                // Example: Copy build files to a deployment directory
-                bat 'xcopy /E /I /Y build\\* C:\\deploy\\LMS'
-                // Or run your own deploy script, e.g.:
-                // bat 'deploy.bat'
+                dir('DevOps') {
+                    bat 'docker-compose down -v'
+                    bat 'docker-compose build'
+                    bat 'docker-compose up -d'
+                }
             }
         }
     }
