@@ -14,7 +14,7 @@ EMAIL_PORT=587
 EMAIL_USE_TLS=True
 EMAIL_HOST_USER=aayushbajracharya90@gmail.com
 EMAIL_HOST_PASSWORD=fxac asfd yqht wfmf
-CORS_ALLOWED_ORIGINS=http://utsav.kutumbatech.com.np:5005,http://110.34.2.30:5005,localhost:5005,http://localhost:5005
+CORS_ALLOWED_ORIGINS=http://utsav.kutumbatech.com.np:5005,http://110.34.2.30:5005,http://localhost:5005
 
 
 DB_NAME=lmss
