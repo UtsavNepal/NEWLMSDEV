@@ -16,6 +16,13 @@ pipeline {
                 bat 'npm run build'
             }
         }
-        // Add deploy steps if needed
+        stage('Deploy') {
+            steps {
+                // Example: Copy build files to a deployment directory
+                bat 'xcopy /E /I /Y build\\* C:\\deploy\\LMS'
+                // Or run your own deploy script, e.g.:
+                // bat 'deploy.bat'
+            }
+        }
     }
 }
