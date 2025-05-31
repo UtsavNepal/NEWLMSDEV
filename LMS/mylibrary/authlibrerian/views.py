@@ -13,8 +13,9 @@ class RegisterUserView(generics.CreateAPIView):
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
+        data = request.data.copy()  # Make a mutable copy to avoid QueryDict immutability error
         user_service = UserService()
-        user = user_service.register_user(request.data)
+        user = user_service.register_user(data)
         return Response(UserSerializer(user).data, status=status.HTTP_201_CREATED)
 
 class LoginView(generics.GenericAPIView):
