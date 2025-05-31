@@ -1,8 +1,18 @@
+import React from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { MdDashboard, MdPerson, MdBook, MdPeople, MdSwapHoriz, MdAssignmentReturn, MdLogout } from 'react-icons/md';
 import Nav from '../assets/NAV.svg';
-import Logout from '../assets/W_logout.svg';
 import { logout } from '../store/slices/authSlice';
 import { useAppDispatch } from '../hooks/useAppDispatch';
+
+const navLinks = [
+  { path: '/dashboard', icon: <MdDashboard size={20} />, label: 'Dashboard' },
+  { path: '/author', icon: <MdPerson size={20} />, label: 'Author' },
+  { path: '/book', icon: <MdBook size={20} />, label: 'Books' },
+  { path: '/student', icon: <MdPeople size={20} />, label: 'Students' },
+  { path: '/transaction-view', icon: <MdSwapHoriz size={20} />, label: 'Transactions' },
+  { path: '/issue', icon: <MdAssignmentReturn size={20} />, label: 'Issuing' },
+];
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
@@ -20,24 +30,13 @@ const Navbar: React.FC = () => {
       </div>
 
       <div className="flex flex-col items-start w-full mt-5">
-        {[
-          { path: '/dashboard', icon: 'Settings.png', label: 'Dashboard' },
-          { path: '/author', icon: 'Author.png', label: 'Author' },
-          { path: '/book', icon: 'Book.png', label: 'Books' },
-          { path: '/student', icon: 'Student.png', label: 'Students' },
-          { path: '/transaction-view', icon: 'transaction.png', label: 'Transactions' },
-          { path: '/issue', icon: 'Issuing.png', label: 'Issuing' },
-        ].map((link) => (
+        {navLinks.map((link) => (
           <Link
             key={link.path}
             to={link.path}
             className="flex items-center w-full p-3 text-white hover:bg-white hover:text-black transition-all duration-300"
           >
-            <img
-              src={`/images/NavbarLogo/${link.icon}`}
-              alt={`${link.label} Icon`}
-              className="w-5 h-5 mr-2 hover:filter-invert"
-            />
+            <span className="w-5 h-5 mr-2">{link.icon}</span>
             {link.label}
           </Link>
         ))}
@@ -48,11 +47,7 @@ const Navbar: React.FC = () => {
           onClick={handleLogout}
           className="flex items-center w-full p-3 text-white hover:bg-white hover:text-black transition-all duration-300"
         >
-          <img
-            src={Logout}
-            alt="Logout Icon"
-            className="w-5 h-5 mr-2 transition-all duration-300 group-hover:custom-filter"
-          />
+          <span className="w-5 h-5 mr-2"><MdLogout size={20} /></span>
           Logout
         </button>
       </div>
