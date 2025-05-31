@@ -5,7 +5,7 @@ pipeline {
             steps {
                 dir('DevOps') {
                     bat 'docker-compose down -v'
-                    bat 'docker-compose build'
+                    bat 'docker-compose build --no-cache'
                     bat 'docker-compose up -d'
                 }
             }
