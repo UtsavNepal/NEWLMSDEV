@@ -3,6 +3,7 @@ from django.contrib.auth.hashers import make_password
 
 class UserRepository:
     def create_user(self, user_data):
+        user_data = user_data.copy()  # Make a mutable copy to avoid QueryDict immutability error
         user_data["password"] = make_password(user_data["password"])
         return User.objects.create(**user_data)
     
